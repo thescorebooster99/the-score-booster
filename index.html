@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The SCORE Booster - BSc Physiotherapy and Health Technology Admission Preparation">
+  <title>The SCORE Booster | Crack Your Goal</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f7fb;
+      color: #172033;
+      line-height: 1.6;
+    }
+    header {
+      background: #102b50;
+      color: white;
+      padding: 18px 6%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .logo { font-size: 21px; font-weight: bold; }
+    .hero {
+      background: linear-gradient(135deg, #102b50, #1768a5);
+      color: white;
+      text-align: center;
+      padding: 75px 20px;
+    }
+    .hero h1 { font-size: 36px; margin-bottom: 12px; }
+    .hero p { font-size: 17px; margin-bottom: 25px; }
+    .btn {
+      display: inline-block;
+      background: #ffbd35;
+      color: #172033;
+      padding: 12px 25px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    .container { max-width: 950px; margin: auto; padding: 35px 18px; }
+    h2 { text-align: center; margin-bottom: 22px; color: #102b50; }
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: white;
+      padding: 22px 12px;
+      border-radius: 12px;
+      text-align: center;
+      box-shadow: 0 3px 14px #0000000d;
+    }
+    .card strong { display: block; color: #1768a5; font-size: 19px; }
+    .login {
+      background: white;
+      padding: 28px;
+      border-radius: 14px;
+      max-width: 440px;
+      margin: 25px auto;
+      box-shadow: 0 3px 18px #00000012;
+    }
+    .login input {
+      width: 100%;
+      padding: 13px;
+      margin: 12px 0;
+      border: 1px solid #ccd4df;
+      border-radius: 7px;
+      font-size: 16px;
+    }
+    .login button { width: 100%; }
+    #message { margin-top: 12px; text-align: center; }
+    footer {
+      background: #102b50;
+      color: white;
+      text-align: center;
+      padding: 22px;
+      margin-top: 30px;
+    }
+    @media(max-width: 480px) {
+      .hero h1 { font-size: 28px; }
+      .hero { padding: 55px 15px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">THE SCORE BOOSTER</div>
+  <div>Crack Your Goal</div>
+</header>
+
+<section class="hero">
+  <h1>Welcome to The SCORE Booster</h1>
+  <p>Your Complete Admission Preparation Platform</p>
+  <p>BSc in Physiotherapy & Health Technology</p>
+  <a href="#student-login" class="btn">Student Login</a>
+</section>
+
+<main class="container">
+  <h2>এক এর ভিতর সব</h2>
+  <div class="cards">
+    <div class="card"><strong>Biology</strong>জীববিজ্ঞান</div>
+    <div class="card"><strong>Chemistry</strong>রসায়ন</div>
+    <div class="card"><strong>Physics</strong>পদার্থবিজ্ঞান</div>
+    <div class="card"><strong>English</strong>ইংরেজি</div>
+    <div class="card"><strong>GK</strong>সাধারণ জ্ঞান</div>
+  </div>
+
+  <section id="student-login" class="login">
+    <h2>Student Login</h2>
+    <p style="text-align:center">আপনার Access Code দিয়ে প্রবেশ করুন</p>
+    <input type="text" id="accessCode" placeholder="Enter Your Access Code">
+    <button class="btn" onclick="loginStudent()">Login Now</button>
+    <p id="message"></p>
+  </section>
+</main>
+
+<footer>
+  <p>© 2026 The SCORE Booster</p>
+  <p>Crack Your Goal | Learn • Practice • Achieve</p>
+</footer>
+
+<script>
+function loginStudent() {
+  const code = document.getElementById("accessCode").value.trim();
+  const message = document.getElementById("message");
+
+  if (!code) {
+    message.textContent = "Please enter your Access Code.";
+    message.style.color = "red";
+    return;
+  }
+
+  message.textContent = "Student login system is being configured.";
+  message.style.color = "#1768a5";
+}
+</script>
+
+</body>
+</html>
