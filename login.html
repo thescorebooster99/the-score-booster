@@ -1,0 +1,60 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Login - The SCORE Booster</title>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #f1f5f9;
+  margin: 0;
+  padding: 25px;
+}
+.container {
+  max-width: 400px;
+  margin: 50px auto;
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px #ccc;
+}
+h2 { text-align: center; color: #123c69; }
+input, button {
+  width: 100%;
+  padding: 13px;
+  margin-top: 12px;
+  box-sizing: border-box;
+  font-size: 16px;
+}
+button {
+  background: #123c69;
+  color: white;
+  border: 0;
+  border-radius: 6px;
+}
+#message { text-align: center; color: #c00; }
+</style>
+</head>
+<body>
+<div class="container">
+<h2>The SCORE Booster</h2>
+<p style="text-align:center">Student Login</p>
+<input type="text" id="accessCode" placeholder="Enter your Access Code">
+<button onclick="login()">Login</button>
+<p id="message"></p>
+</div>
+<script>
+function login() {
+  const code = document.getElementById("accessCode").value.trim();
+  const message = document.getElementById("message");
+  if (!code) {
+    message.textContent = "Please enter your Access Code.";
+    return;
+  }
+  message.textContent = "Access Code system is being connected. Please try again later.";
+}
+</script>
+</body>
+</html>
