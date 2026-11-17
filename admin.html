@@ -1,0 +1,114 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Admin Dashboard - The SCORE Booster</title>
+<style>
+body{font-family:Arial;background:#f1f5f9;padding:20px}
+.box{max-width:450px;margin:30px auto;background:white;padding:22px;border-radius:12px}
+input,button{width:100%;padding:13px;margin:9px 0;box-sizing:border-box;font-size:16px}
+button{background:#123c69;color:white;border:0;border-radius:6px}
+h2{text-align:center;color:#123c69}
+#dashboard{display:none}
+#message{overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<div class="box">
+<h2>The SCORE Booster</h2>
+<h3>Admin Login</h3>
+
+<div id="login">
+<input id="email" type="email" placeholder="Admin Email">
+<input id="password" type="password" placeholder="Admin Password">
+<button onclick="adminLogin()">Login</button>
+</div>
+
+<div id="dashboard">
+<h3>Access Code Generator</h3>
+<input id="studentName" placeholder="Student Name">
+<input id="days" type="number" value="30" min="1" max="365">
+<button onclick="createCode()">Generate Access Code</button>
+<button onclick="logout()">Logout</button>
+</div>
+
+<p id="message"></p>
+<div id="result"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+<script>
+async function adminLogin(){
+ const msg=document.getElementById("message");
+ msg.textContent="Checking...";
+ try{
+  const {data,error}=await window.sb.auth.signInWithPassword({
+   email:document.getElementById("email").value.trim(),
+   password:document.getElementById("password").value
+  });
+  if(error) throw error;
+
+  const {data:isAdmin,error:adminError}=await window.sb.rpc("is_admin");
+  if(adminError) throw adminError;
+
+  if(!isAdmin){
+   await window.sb.auth.signOut();
+   throw new Error("Admin permission denied");
+  }
+
+  document.getElementById("login").style.display="none";
+  document.getElementById("dashboard").style.display="block";
+  msg.textContent="Admin login successful.";
+ }catch(e){
+  msg.textContent="Error: "+e.message;
+ }
+}
+
+async function createCode(){
+ const msg=document.getElementById("message");
+ const result=document.getElementById("result");
+ msg.textContent="Generating...";
+ result.textContent="";
+
+ try{
+  const name=document.getElementById("studentName").value.trim();
+  const days=Number(document.getElementById("days").value);
+
+  if(!name || !Number.isInteger(days) || days<1 || days>365)
+   throw new Error("Enter a student name and validity from 1 to 365 days.");
+
+  const {data,error}=await window.sb.rpc("admin_create_access_code",{
+   p_student_name:name,
+   p_valid_days:days
+  });
+
+  if(error) throw error;
+  if(!data || !data.success) throw new Error(data?.message || "Code creation failed.");
+
+  result.innerHTML="";
+  const heading=document.createElement("h3");
+  heading.textContent="Code Created Successfully";
+  const code=document.createElement("p");
+  code.textContent="Access Code: "+data.access_code;
+  const student=document.createElement("p");
+  student.textContent="Student Code: "+data.student_code;
+  result.append(heading,code,student);
+
+  msg.textContent="Save this code and give it to the student.";
+ }catch(e){
+  msg.textContent="Error: "+e.message;
+ }
+}
+
+async function logout(){
+ await window.sb.auth.signOut();
+ location.reload();
+}
+</script>
+</body>
+</html>
