@@ -56,5 +56,54 @@ function login() {
   message.textContent = "Access Code system is being connected. Please try again later.";
 }
 </script>
+  
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+<script>
+window.login = async function () {
+  const code = document.getElementById("accessCode").value.trim();
+  const message = document.getElementById("message");
+
+  if (!code) {
+    message.textContent = "Please enter your Access Code.";
+    return;
+  }
+
+  message.textContent = "Checking Access Code...";
+
+  try {
+    let { data: sessionData } = await window.sb.auth.getSession();
+
+    if (!sessionData.session) {
+      const { error: authError } =
+        await window.sb.auth.signInAnonymously();
+
+      if (authError) throw authError;
+    }
+
+    const { data, error } = await window.sb.rpc(
+      "redeem_access_code",
+      { p_code: code }
+    );
+
+    if (error) throw error;
+
+    if (data && data.success) {
+      message.style.color = "green";
+      message.textContent = "Access granted! Login successful.";
+    } else {
+      message.style.color = "red";
+      message.textContent = data?.message || "Access denied.";
+    }
+
+  } catch (error) {
+    message.style.color = "red";
+    message.textContent = "Error: " + error.message;
+  }
+};
+</script>
+
 </body>
 </html>
