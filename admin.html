@@ -328,5 +328,53 @@ async function importQuestions() {
   }
 }
 </script>
+ <hr>
+<h2>Publish Exam</h2>
+
+<input
+  id="publishExamId"
+  placeholder="Enter Exam UUID"
+  style="width:100%; padding:10px;"
+>
+
+<br><br>
+
+<button onclick="publishExam()">
+  Publish Exam
+</button>
+
+<p id="publishMessage"></p>
+
+<script>
+async function publishExam() {
+  const examId =
+    document.getElementById("publishExamId").value.trim();
+
+  const msg =
+    document.getElementById("publishMessage");
+
+  if (!examId) {
+    msg.textContent = "Please enter Exam ID.";
+    return;
+  }
+
+  msg.textContent = "Checking and publishing...";
+
+  try {
+    const { data, error } = await window.sb.rpc(
+      "admin_publish_exam",
+      { p_exam_id: examId }
+    );
+
+    if (error) throw error;
+
+    msg.textContent =
+      data.message || "Exam published successfully!";
+
+  } catch (e) {
+    msg.textContent = "Error: " + e.message;
+  }
+}
+</script>
 </body>
 </html>
