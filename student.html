@@ -5,34 +5,101 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Student Dashboard - The SCORE Booster</title>
+
 <style>
-body{font-family:Arial;background:#f1f5f9;margin:0;padding:20px}
-.box{max-width:600px;margin:25px auto;background:white;padding:22px;border-radius:12px}
+body{
+ font-family:Arial,sans-serif;
+ background:#f1f5f9;
+ margin:0;
+ padding:15px;
+}
+.box{
+ max-width:650px;
+ margin:20px auto;
+ background:white;
+ padding:20px;
+ border-radius:12px;
+}
 h2{text-align:center;color:#123c69}
-button{width:100%;padding:14px;margin:10px 0;background:#123c69;color:white;border:0;border-radius:7px;font-size:16px}
+button{
+ width:100%;
+ padding:14px;
+ margin:8px 0;
+ background:#123c69;
+ color:white;
+ border:0;
+ border-radius:7px;
+ font-size:16px;
+ cursor:pointer;
+}
+button:disabled{background:#999}
+.mainBtn{background:#087e8b}
+.card{
+ background:#f1f5f9;
+ padding:15px;
+ margin:12px 0;
+ border-radius:8px;
+}
+.question{
+ border:1px solid #ddd;
+ padding:14px;
+ margin:12px 0;
+ border-radius:8px;
+}
+.option{
+ display:block;
+ padding:10px;
+ margin:6px 0;
+ background:white;
+ border:1px solid #ddd;
+ border-radius:6px;
+}
+#timer{
+ position:sticky;
+ top:5px;
+ background:#fff3cd;
+ color:#8a4b00;
+ padding:12px;
+ text-align:center;
+ font-size:22px;
+ font-weight:bold;
+ border-radius:8px;
+ z-index:2;
+}
 #message{text-align:center}
 iframe{width:100%;height:600px;border:1px solid #ddd}
+.hidden{display:none}
+.correct{background:#d1fae5;padding:10px}
+.wrong{background:#fee2e2;padding:10px}
 </style>
 </head>
+
 <body>
 <div class="box">
+
 <h2>The SCORE Booster</h2>
 <h3>Student Dashboard</h3>
+
 <p id="message">Checking student access...</p>
 
-<div id="dashboard" style="display:none">
+<div id="dashboard" class="hidden">
+
 <button onclick="openBook()">📚 Read PDF Book</button>
- <hr>
 
-<h3>📝 Model Tests</h3>
+<button class="mainBtn" onclick="toggleExams()">
+📝 Exam
+</button>
 
-<div id="examList">
-Loading available exams...
+<div id="examSection" class="hidden">
+<h3>Available Examinations</h3>
+<div id="examList">Loading exams...</div>
 </div>
 
 <div id="examArea"></div>
 <div id="book"></div>
+
 <button onclick="logout()">Logout</button>
+
 </div>
 </div>
 
@@ -41,6 +108,11 @@ Loading available exams...
 <script src="app.js"></script>
 
 <script>
+let currentExamId = null;
+let currentAnswers = {};
+let timerInterval = null;
+let isSubmitting = false;
+
 async function checkAccess(){
  try{
   const {data:sessionData}=await window.sb.auth.getSession();
@@ -53,11 +125,99 @@ async function checkAccess(){
   if(error) throw error;
   if(!data) throw new Error("Student access not found.");
 
-  document.getElementById("message").textContent="Welcome to The SCORE Booster!";
-  document.getElementById("dashboard").style.display="block";
+  document.getElementById("message").textContent =
+   "Welcome to The SCORE Booster!";
+
+  document.getElementById("dashboard").classList.remove("hidden");
 
  }catch(e){
   document.getElementById("message").textContent=e.message;
+ }
+}
+
+function toggleExams(){
+ const section=document.getElementById("examSection");
+ section.classList.toggle("hidden");
+
+ if(!section.classList.contains("hidden")){
+  loadExams();
+ }
+}
+
+async function loadExams(){
+ const box=document.getElementById("examList");
+ box.textContent="Loading exams...";
+
+ try{
+  const {data,error}=await window.sb.rpc("get_student_exam_list");
+  if(error) throw error;
+
+  box.innerHTML="";
+
+  if(!data || data.length===0){
+   box.textContent="No exams available.";
+   return;
+  }
+
+  data.forEach(exam=>{
+   const div=document.createElement("div");
+   div.className="card";
+
+   const title=document.createElement("h3");
+   title.textContent=exam.title;
+
+   const details=document.createElement("p");
+   details.textContent=
+    exam.question_limit+" Questions | "+
+    exam.duration_minutes+" Minutes";
+
+   const status=document.createElement("p");
+   const btn=document.createElement("button");
+   const now=new Date();
+
+   div.append(title,details,status);
+
+   if(exam.attempted || exam.submitted_at){
+    status.textContent="✅ Submitted";
+    btn.textContent="পরীক্ষা সম্পন্ন";
+    btn.disabled=true;
+    div.appendChild(btn);
+   }
+   else if(exam.started_at){
+    const deadline=new Date(exam.deadline_at);
+
+    if(now < deadline){
+     status.textContent="🟢 পরীক্ষা চলমান";
+     btn.textContent="পরীক্ষায় ফিরে যান";
+    }else{
+     status.textContent="⏰ পরীক্ষার সময় শেষ";
+     btn.textContent="Submit Exam";
+    }
+
+    btn.onclick=()=>startExam(exam.id);
+    div.appendChild(btn);
+   }
+   else if(!exam.start_at || !exam.end_at){
+    status.textContent="Schedule not set";
+   }
+   else if(now < new Date(exam.start_at)){
+    status.textContent="⏳ Upcoming";
+   }
+   else if(now >= new Date(exam.end_at)){
+    status.textContent="পরীক্ষার সময় শেষ";
+   }
+   else{
+    status.textContent="🟢 Available to start";
+    btn.textContent="Start Exam";
+    btn.onclick=()=>startExam(exam.id);
+    div.appendChild(btn);
+   }
+
+   box.appendChild(div);
+  });
+
+ }catch(e){
+  box.textContent="Error: "+e.message;
  }
 }
 
@@ -82,67 +242,270 @@ async function openBook(){
  }
 }
 
+async function startExam(examId){
+ try{
+  document.getElementById("examArea").innerHTML=
+   "Preparing examination...";
+
+  const {data:session,error:sessionError}=await window.sb.rpc(
+   "start_exam",
+   {p_exam_id:examId}
+  );
+
+  if(sessionError) throw sessionError;
+
+  currentExamId=examId;
+
+  if(new Date(session.deadline_at).getTime()<=Date.now()){
+   currentAnswers=loadSavedAnswers(examId);
+   await submitExam(true);
+   return;
+  }
+
+  const {data,error}=await window.sb.rpc(
+   "get_exam_questions",
+   {p_exam_id:examId}
+  );
+
+  if(error) throw error;
+
+  currentAnswers=loadSavedAnswers(examId);
+
+  renderExam(data);
+  startTimer(session.deadline_at);
+
+ }catch(e){
+  document.getElementById("examArea").textContent=
+   "Exam Error: "+e.message;
+ }
+}
+
+function loadSavedAnswers(examId){
+ try{
+  return JSON.parse(
+   localStorage.getItem("score_answers_"+examId) || "{}"
+  );
+ }catch(e){
+  return {};
+ }
+}
+
+function saveAnswers(){
+ if(currentExamId){
+  localStorage.setItem(
+   "score_answers_"+currentExamId,
+   JSON.stringify(currentAnswers)
+  );
+ }
+}
+
+function renderExam(data){
+ const area=document.getElementById("examArea");
+ area.innerHTML="";
+
+ const heading=document.createElement("h2");
+ heading.textContent=data.title;
+
+ const timer=document.createElement("div");
+ timer.id="timer";
+ timer.textContent="Loading timer...";
+
+ area.append(heading,timer);
+
+ const questions=data.questions || [];
+
+ questions.forEach((q,index)=>{
+  const div=document.createElement("div");
+  div.className="question";
+
+  const title=document.createElement("h4");
+  title.textContent=(index+1)+". "+q.question_text;
+  div.appendChild(title);
+
+  const options=Array.isArray(q.options)
+   ? q.options
+   : Object.values(q.options || {});
+
+  options.forEach((option,i)=>{
+   const label=document.createElement("label");
+   label.className="option";
+
+   const radio=document.createElement("input");
+   radio.type="radio";
+   radio.name="question_"+q.id;
+   radio.value=String(i+1);
+
+   if(Number(currentAnswers[q.id])===i+1){
+    radio.checked=true;
+   }
+
+   radio.onchange=()=>{
+    currentAnswers[q.id]=i+1;
+    saveAnswers();
+   };
+
+   label.append(radio," "+String.fromCharCode(65+i)+". "+option);
+   div.appendChild(label);
+  });
+
+  area.appendChild(div);
+ });
+
+ const submit=document.createElement("button");
+ submit.textContent="Submit Exam";
+ submit.onclick=()=>submitExam(false);
+ area.appendChild(submit);
+
+ area.scrollIntoView({behavior:"smooth"});
+}
+
+function startTimer(deadline){
+ if(timerInterval) clearInterval(timerInterval);
+
+ const timer=document.getElementById("timer");
+ const deadlineMs=new Date(deadline).getTime();
+
+ function update(){
+  const remaining=Math.max(0,deadlineMs-Date.now());
+
+  const minutes=Math.floor(remaining/60000);
+  const seconds=Math.floor((remaining%60000)/1000);
+
+  if(timer){
+   timer.textContent=
+    "Time Remaining: "+
+    String(minutes).padStart(2,"0")+":"+
+    String(seconds).padStart(2,"0");
+  }
+
+  if(remaining<=0){
+   clearInterval(timerInterval);
+   submitExam(true);
+  }
+ }
+
+ update();
+ timerInterval=setInterval(update,1000);
+}
+
+async function submitExam(auto=false){
+ if(!currentExamId || isSubmitting) return;
+
+ if(!auto && !confirm("Are you sure you want to submit?")){
+  return;
+ }
+
+ isSubmitting=true;
+
+ const area=document.getElementById("examArea");
+ area.innerHTML="Submitting examination...";
+
+ try{
+  const {data,error}=await window.sb.rpc(
+   "submit_exam",
+   {
+    p_exam_id:currentExamId,
+    p_answers:currentAnswers
+   }
+  );
+
+  if(error) throw error;
+
+  if(timerInterval) clearInterval(timerInterval);
+
+  localStorage.removeItem("score_answers_"+currentExamId);
+
+  area.innerHTML="";
+
+  const heading=document.createElement("h2");
+  heading.textContent="Exam Result";
+
+  const score=document.createElement("h3");
+  score.textContent=
+   "Score: "+data.score+" / "+data.total_marks;
+
+  const summary=document.createElement("p");
+  summary.textContent=
+   "Correct: "+data.correct_count+
+   " | Wrong: "+data.wrong_count+
+   " | Unanswered: "+data.unanswered_count;
+
+  area.append(heading,score,summary);
+
+  const reviewHeading=document.createElement("h3");
+  reviewHeading.textContent="Answer Review";
+  area.appendChild(reviewHeading);
+
+  const {data:review,error:reviewError}=await window.sb.rpc(
+   "get_my_exam_review",
+   {p_exam_id:currentExamId}
+  );
+
+  if(reviewError) throw reviewError;
+
+  (review.questions || []).forEach((q,index)=>{
+   const div=document.createElement("div");
+   div.className="question";
+
+   const title=document.createElement("h4");
+   title.textContent=(index+1)+". "+q.question;
+   div.appendChild(title);
+
+   const options=Array.isArray(q.options)
+    ? q.options
+    : Object.values(q.options || {});
+
+   options.forEach((option,i)=>{
+    const p=document.createElement("p");
+    p.textContent=
+     String.fromCharCode(65+i)+". "+option;
+
+    if(i+1===q.correct_option){
+     p.className="correct";
+     p.textContent+=" ✓ Correct Answer";
+    }else if(i+1===q.your_answer){
+     p.className="wrong";
+     p.textContent+=" ✗ Your Answer";
+    }
+
+    div.appendChild(p);
+   });
+
+   const explanation=document.createElement("p");
+   explanation.textContent=
+    "Explanation: "+(q.explanation || "Not available");
+
+   div.appendChild(explanation);
+   area.appendChild(div);
+  });
+
+  const back=document.createElement("button");
+  back.textContent="Back to Dashboard";
+  back.onclick=()=>{
+   area.innerHTML="";
+   currentExamId=null;
+   currentAnswers={};
+   loadExams();
+   window.scrollTo(0,0);
+  };
+
+  area.appendChild(back);
+  area.scrollIntoView({behavior:"smooth"});
+
+  loadExams();
+
+ }catch(e){
+  area.textContent="Submit Error: "+e.message;
+ }finally{
+  isSubmitting=false;
+ }
+}
+
 async function logout(){
  await window.sb.auth.signOut();
  location.href="login.html";
 }
-async function loadExams() {
-  const box = document.getElementById("examList");
-  box.textContent = "Loading exams...";
 
-  try {
-    const { data, error } = await window.sb.rpc(
-      "get_student_exam_list"
-    );
-
-    if (error) throw error;
-
-    box.innerHTML = "";
-
-    if (!data || data.length === 0) {
-      box.textContent = "No exams available.";
-      return;
-    }
-
-    data.forEach(exam => {
-      const div = document.createElement("div");
-      div.style.cssText =
-        "background:#f1f5f9;padding:15px;margin:12px 0;border-radius:8px";
-
-      const title = document.createElement("h3");
-      title.textContent = exam.title;
-
-      const details = document.createElement("p");
-      details.textContent =
-        exam.question_limit + " Questions | " +
-        exam.duration_minutes + " Minutes";
-
-      const status = document.createElement("p");
-      const now = new Date();
-
-      if (exam.attempted || exam.submitted_at) {
-        status.textContent = "Submitted";
-      } else if (exam.started_at) {
-        status.textContent = "Exam already started";
-      } else if (!exam.start_at || !exam.end_at) {
-        status.textContent = "Schedule not set";
-      } else if (now < new Date(exam.start_at)) {
-        status.textContent = "Upcoming";
-      } else if (now >= new Date(exam.end_at)) {
-        status.textContent = "Exam window closed";
-      } else {
-        status.textContent = "Available to start";
-      }
-
-      div.append(title, details, status);
-      box.appendChild(div);
-    });
-
-  } catch (e) {
-    box.textContent = "Error: " + e.message;
-  }
-}
- loadExams();
 checkAccess();
 </script>
 </body>
