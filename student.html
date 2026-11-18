@@ -86,7 +86,63 @@ async function logout(){
  await window.sb.auth.signOut();
  location.href="login.html";
 }
+async function loadExams() {
+  const box = document.getElementById("examList");
+  box.textContent = "Loading exams...";
 
+  try {
+    const { data, error } = await window.sb.rpc(
+      "get_student_exam_list"
+    );
+
+    if (error) throw error;
+
+    box.innerHTML = "";
+
+    if (!data || data.length === 0) {
+      box.textContent = "No exams available.";
+      return;
+    }
+
+    data.forEach(exam => {
+      const div = document.createElement("div");
+      div.style.cssText =
+        "background:#f1f5f9;padding:15px;margin:12px 0;border-radius:8px";
+
+      const title = document.createElement("h3");
+      title.textContent = exam.title;
+
+      const details = document.createElement("p");
+      details.textContent =
+        exam.question_limit + " Questions | " +
+        exam.duration_minutes + " Minutes";
+
+      const status = document.createElement("p");
+      const now = new Date();
+
+      if (exam.attempted || exam.submitted_at) {
+        status.textContent = "Submitted";
+      } else if (exam.started_at) {
+        status.textContent = "Exam already started";
+      } else if (!exam.start_at || !exam.end_at) {
+        status.textContent = "Schedule not set";
+      } else if (now < new Date(exam.start_at)) {
+        status.textContent = "Upcoming";
+      } else if (now >= new Date(exam.end_at)) {
+        status.textContent = "Exam window closed";
+      } else {
+        status.textContent = "Available to start";
+      }
+
+      div.append(title, details, status);
+      box.appendChild(div);
+    });
+
+  } catch (e) {
+    box.textContent = "Error: " + e.message;
+  }
+}
+ loadExams();
 checkAccess();
 </script>
 </body>
