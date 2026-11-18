@@ -250,7 +250,13 @@ async function addQuestion(){
 
 <p>Exam ID:</p>
 <input id="bulkExamId" placeholder="Enter Exam ID">
-
+<p>Upload JSON File:</p>
+<input
+  type="file"
+  id="bulkFile"
+  accept=".json,application/json"
+>
+<button onclick="loadBulkFile()">Load JSON File</button>
 <p>MCQ JSON:</p>
 <textarea id="bulkQuestions" rows="12"
 placeholder="Paste MCQ JSON here"
@@ -292,6 +298,33 @@ async function importQuestions() {
 
   } catch (e) {
     msg.textContent = "Error: " + e.message;
+  }
+}
+ async function loadBulkFile() {
+  const file = document.getElementById("bulkFile").files[0];
+  const msg = document.getElementById("bulkMessage");
+
+  if (!file) {
+    msg.textContent = "Please select a JSON file.";
+    return;
+  }
+
+  try {
+    const raw = await file.text();
+    const questions = JSON.parse(raw);
+
+    if (!Array.isArray(questions)) {
+      throw new Error("Invalid JSON format.");
+    }
+
+    document.getElementById("bulkQuestions").value =
+      JSON.stringify(questions);
+
+    msg.textContent =
+      questions.length + " questions loaded. Now click Import Questions.";
+
+  } catch (e) {
+    msg.textContent = "File error: " + e.message;
   }
 }
 </script>
