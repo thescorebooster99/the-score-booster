@@ -376,5 +376,73 @@ async function publishExam() {
   }
 }
 </script>
+ <hr>
+<h2>Exam Schedule Control</h2>
+
+<label>Exam ID:</label>
+<input id="scheduleExamId"
+placeholder="Enter Exam UUID"
+style="width:100%;padding:10px;">
+
+<br><br>
+
+<label>Exam Start Date & Time:</label>
+<input type="datetime-local"
+id="examStart"
+style="width:100%;padding:10px;">
+
+<br><br>
+
+<label>Exam End Date & Time:</label>
+<input type="datetime-local"
+id="examEnd"
+style="width:100%;padding:10px;">
+
+<br><br>
+
+<button onclick="saveExamSchedule()">
+Save Exam Schedule
+</button>
+
+<p id="scheduleMessage"></p>
+
+<script>
+async function saveExamSchedule() {
+  const examId = document.getElementById("scheduleExamId").value.trim();
+  const start = document.getElementById("examStart").value;
+  const end = document.getElementById("examEnd").value;
+  const msg = document.getElementById("scheduleMessage");
+
+  if (!examId || !start || !end) {
+    msg.textContent = "Please fill all fields.";
+    return;
+  }
+
+  if (new Date(end) <= new Date(start)) {
+    msg.textContent = "End time must be after start time.";
+    return;
+  }
+
+  msg.textContent = "Saving schedule...";
+
+  try {
+    const { data, error } = await window.sb.rpc(
+      "admin_set_exam_schedule",
+      {
+        p_exam_id: examId,
+        p_start_at: new Date(start).toISOString(),
+        p_end_at: new Date(end).toISOString()
+      }
+    );
+
+    if (error) throw error;
+
+    msg.textContent = data.message || "Schedule saved successfully!";
+
+  } catch (e) {
+    msg.textContent = "Error: " + e.message;
+  }
+}
+</script>
 </body>
 </html>
