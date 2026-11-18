@@ -160,5 +160,91 @@ async function createExam(){
  }
 }
 </script>
+ 
+<hr>
+<h2>MCQ Question Management</h2>
+
+<label>Exam ID</label>
+<input id="questionExamId" placeholder="Paste Exam ID">
+
+<label>Question</label>
+<textarea id="questionText" placeholder="Write your question"></textarea>
+
+<label>Option A</label>
+<input id="optionA" placeholder="Option A">
+
+<label>Option B</label>
+<input id="optionB" placeholder="Option B">
+
+<label>Option C</label>
+<input id="optionC" placeholder="Option C">
+
+<label>Option D</label>
+<input id="optionD" placeholder="Option D">
+
+<label>Correct Answer</label>
+<select id="correctOption">
+<option value="1">Option A</option>
+<option value="2">Option B</option>
+<option value="3">Option C</option>
+<option value="4">Option D</option>
+</select>
+
+<label>Explanation</label>
+<textarea id="questionExplanation" placeholder="Write explanation"></textarea>
+
+<button onclick="addQuestion()">Add Question</button>
+<p id="questionMessage"></p>
+
+<script>
+async function addQuestion(){
+ const msg=document.getElementById("questionMessage");
+ const examId=document.getElementById("questionExamId").value.trim();
+ const question=document.getElementById("questionText").value.trim();
+
+ const options=[
+ document.getElementById("optionA").value.trim(),
+ document.getElementById("optionB").value.trim(),
+ document.getElementById("optionC").value.trim(),
+ document.getElementById("optionD").value.trim()
+ ];
+
+ const correct=Number(document.getElementById("correctOption").value);
+ const explanation=document.getElementById("questionExplanation").value.trim();
+
+ if(!examId || !question || options.some(x=>!x)){
+ msg.textContent="Please fill all required fields.";
+ return;
+ }
+
+ msg.textContent="Adding question...";
+
+ try{
+ const {data,error}=await window.sb.rpc("admin_add_question",{
+ p_exam_id:examId,
+ p_question_text:question,
+ p_options:options,
+ p_correct_option:correct,
+ p_explanation:explanation || null
+ });
+
+ if(error) throw error;
+
+ msg.textContent="Question added successfully! "+
+ data.questions_added+" / "+data.question_limit;
+
+ document.getElementById("questionText").value="";
+ document.getElementById("optionA").value="";
+ document.getElementById("optionB").value="";
+ document.getElementById("optionC").value="";
+ document.getElementById("optionD").value="";
+ document.getElementById("questionExplanation").value="";
+
+ }catch(e){
+ msg.textContent="Error: "+e.message;
+ }
+}
+</script>
+
 </body>
 </html>
