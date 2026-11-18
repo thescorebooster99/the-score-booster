@@ -159,28 +159,6 @@ async function createExam(){
   msg.textContent="Error: "+e.message;
  }
 }
-
- msg.textContent="Creating Exam...";
-
- try{
-  const {data,error}=await window.sb
-   .from("exams")
-   .insert({
-    title:title,
-    question_limit:limit,
-    is_published:false
-   })
-   .select()
-   .single();
-
-  if(error) throw error;
-
-  msg.textContent="Exam created successfully! Exam ID: "+data.id;
-
- }catch(e){
-  msg.textContent="Error: "+e.message;
- }
-}
 </script>
 </body>
 </html>
