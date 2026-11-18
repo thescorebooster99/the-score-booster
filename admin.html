@@ -245,6 +245,55 @@ async function addQuestion(){
  }
 }
 </script>
+<hr>
+<h2>Bulk MCQ Import</h2>
 
+<p>Exam ID:</p>
+<input id="bulkExamId" placeholder="Enter Exam ID">
+
+<p>MCQ JSON:</p>
+<textarea id="bulkQuestions" rows="12"
+placeholder="Paste MCQ JSON here"
+style="width:100%;"></textarea>
+
+<br><br>
+<button onclick="importQuestions()">Import Questions</button>
+
+<p id="bulkMessage"></p>
+
+<script>
+async function importQuestions() {
+  const examId = document.getElementById("bulkExamId").value.trim();
+  const raw = document.getElementById("bulkQuestions").value.trim();
+  const msg = document.getElementById("bulkMessage");
+
+  if (!examId || !raw) {
+    msg.textContent = "Exam ID and MCQ JSON required.";
+    return;
+  }
+
+  try {
+    const questions = JSON.parse(raw);
+
+    msg.textContent = "Importing...";
+
+    const { data, error } = await window.sb.rpc(
+      "admin_add_questions_bulk",
+      {
+        p_exam_id: examId,
+        p_questions: questions
+      }
+    );
+
+    if (error) throw error;
+
+    msg.textContent = "Success! " +
+      data.questions_added + " questions added.";
+
+  } catch (e) {
+    msg.textContent = "Error: " + e.message;
+  }
+}
+</script>
 </body>
 </html>
