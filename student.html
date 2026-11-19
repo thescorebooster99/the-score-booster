@@ -268,10 +268,15 @@ async function startExam(examId){
   );
 
   if(error) throw error;
+currentAnswers = data.saved_answers || {};
 
-  currentAnswers=loadSavedAnswers(examId);
+localStorage.setItem(
+  "score_answers_"+examId,
+  JSON.stringify(currentAnswers)
+);
 
-  renderExam(data);
+renderExam(data);
+  
   startTimer(session.deadline_at);
 
  }catch(e){
@@ -415,7 +420,7 @@ async function submitExam(auto=false){
  }
 
  isSubmitting=true;
-
+await saveQueue;
  const area=document.getElementById("examArea");
  area.innerHTML="Submitting examination...";
 
