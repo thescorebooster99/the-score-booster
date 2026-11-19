@@ -212,6 +212,7 @@ async function addQuestion(){
  ];
 
  const correct=Number(document.getElementById("correctOption").value);
+ const subject=document.getElementById("questionSubject").value;
  const explanation=document.getElementById("questionExplanation").value.trim();
 
  if(!examId || !question || options.some(x=>!x)){
@@ -227,15 +228,16 @@ async function addQuestion(){
  p_question_text:question,
  p_options:options,
  p_correct_option:correct,
- p_explanation:explanation || null
+p_subject:subject,
+p_explanation:explanation || null
  });
 
  if(error) throw error;
 
- msg.textContent="Question added successfully! "+
- data.questions_added+" / "+data.question_limit;
+ msg.textContent="Question added successfully!";
 
  document.getElementById("questionText").value="";
+  document.getElementById("questionSubject").value="biology";
  document.getElementById("optionA").value="";
  document.getElementById("optionB").value="";
  document.getElementById("optionC").value="";
@@ -384,6 +386,14 @@ async function publishExam() {
 <label>Exam ID:</label>
 <input id="scheduleExamId"
 placeholder="Enter Exam UUID"
+ <label>Subject</label>
+<select id="questionSubject">
+  <option value="biology">Biology</option>
+  <option value="chemistry">Chemistry</option>
+  <option value="physics">Physics</option>
+  <option value="english">English</option>
+  <option value="general_knowledge">General Knowledge</option>
+</select>
 style="width:100%;padding:10px;">
 
 <br><br>
