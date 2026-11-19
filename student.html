@@ -279,24 +279,43 @@ async function startExam(examId){
    "Exam Error: "+e.message;
  }
 }
-
 function loadSavedAnswers(examId){
- try{
-  return JSON.parse(
-   localStorage.getItem("score_answers_"+examId) || "{}"
-  );
- }catch(e){
-  return {};
- }
+  try{
+    return JSON.parse(
+      localStorage.getItem("score_answers_"+examId) || "{}"
+    );
+  }catch(e){
+    return {};
+  }
 }
 
 function saveAnswers(){
- if(currentExamId){
+  if(!currentExamId) return;
+
   localStorage.setItem(
-   "score_answers_"+currentExamId,
-   JSON.stringify(currentAnswers)
+    "score_answers_"+currentExamId,
+    JSON.stringify(currentAnswers)
   );
- }
+
+  const examId = currentExamId;
+  const answers = {...currentAnswers};
+
+  saveQueue = saveQueue.then(async()=>{
+    const {error} = await window.sb.rpc(
+      "save_exam_answers",
+      {
+        p_exam_id: examId,
+        p_answers: answers
+      }
+    );
+
+    if(error) throw error;
+
+  }).catch(e=>{
+    console.error("Autosave error:",e.message);
+  });
+
+  return saveQueue;
 }
 
 function renderExam(data){
@@ -498,6 +517,7 @@ async function submitExam(auto=false){
   area.textContent="Submit Error: "+e.message;
  }finally{
   isSubmitting=false;
+  let saveQueue = Promise.resolve();
  }
 }
 
