@@ -64,6 +64,7 @@ async function adminLogin(){
 
   document.getElementById("login").style.display="none";
   document.getElementById("dashboard").style.display="block";
+  document.getElementById("adminSections").style.display="block";
   msg.textContent="Admin login successful.";
  }catch(e){
   msg.textContent="Error: "+e.message;
@@ -111,6 +112,7 @@ async function logout(){
  location.reload();
 }
 </script>
+ <div id="adminSections" style="display:none;">
  <hr>
 <h3>MCQ Exam Management</h3>
 
@@ -444,5 +446,6 @@ async function saveExamSchedule() {
   }
 }
 </script>
+</div>
 </body>
 </html>
