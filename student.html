@@ -112,7 +112,7 @@ let currentExamId = null;
 let currentAnswers = {};
 let timerInterval = null;
 let isSubmitting = false;
-
+let saveQueue = Promise.resolve();
 async function checkAccess(){
  try{
   const {data:sessionData}=await window.sb.auth.getSession();
@@ -522,7 +522,6 @@ await saveQueue;
   area.textContent="Submit Error: "+e.message;
  }finally{
   isSubmitting=false;
-  let saveQueue = Promise.resolve();
  }
 }
 
