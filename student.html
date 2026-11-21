@@ -268,12 +268,18 @@ async function startExam(examId){
   );
 
   if(error) throw error;
-currentAnswers = data.saved_answers || {};
+
+currentAnswers = {
+  ...loadSavedAnswers(examId),
+  ...(data.saved_answers || {})
+};
 
 localStorage.setItem(
-  "score_answers_"+examId,
+  "score_answers_" + examId,
   JSON.stringify(currentAnswers)
 );
+
+await saveAnswers();
 
 renderExam(data);
   
