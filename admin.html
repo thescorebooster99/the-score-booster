@@ -279,6 +279,59 @@ style="width:100%;"></textarea>
 <p id="bulkMessage"></p>
 
 <script>
+ 
+<hr>
+<h2>Subject-wise Question Counter</h2>
+
+<label>Exam ID:</label>
+<input
+  id="countExamId"
+  placeholder="Enter Exam UUID"
+>
+
+<button onclick="loadSubjectCounts()">
+  Check Question Count
+</button>
+
+<div id="subjectCountResult"></div>
+
+<script>
+async function loadSubjectCounts() {
+  const examId = document.getElementById("countExamId").value.trim();
+  const result = document.getElementById("subjectCountResult");
+
+  if (!examId) {
+    result.textContent = "Please enter Exam ID.";
+    return;
+  }
+
+  result.textContent = "Loading question counts...";
+
+  try {
+    const { data, error } = await window.sb.rpc(
+      "admin_get_exam_subject_counts",
+      { p_exam_id: examId }
+    );
+
+    if (error) throw error;
+
+    result.innerHTML = `
+      <h3>Question Summary</h3>
+      <p>Biology: ${data.biology}</p>
+      <p>Chemistry: ${data.chemistry}</p>
+      <p>Physics: ${data.physics}</p>
+      <p>English: ${data.english}</p>
+      <p>General Knowledge: ${data.general_knowledge}</p>
+      <hr>
+      <h3>Total Questions: ${data.total}</h3>
+    `;
+
+  } catch (e) {
+    result.textContent = "Error: " + e.message;
+  }
+}
+</script>
+
 async function importQuestions() {
   const examId = document.getElementById("bulkExamId").value.trim();
   const raw = document.getElementById("bulkQuestions").value.trim();
