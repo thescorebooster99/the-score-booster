@@ -269,10 +269,7 @@ async function startExam(examId){
 
   if(error) throw error;
 
-currentAnswers = {
-  ...loadSavedAnswers(examId),
-  ...(data.saved_answers || {})
-};
+currentAnswers = data.saved_answers || {};
 
 localStorage.setItem(
   "score_answers_" + examId,
