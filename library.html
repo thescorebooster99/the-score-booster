@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Reading Library - The SCORE Booster</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  font-family:Arial,sans-serif;
+  background:#f1f5f9;
+  margin:0;
+  color:#172033;
+}
+header{
+  background:#102b50;
+  color:white;
+  padding:18px;
+  text-align:center;
+}
+.container{
+  max-width:850px;
+  margin:auto;
+  padding:20px;
+}
+.box{
+  background:white;
+  padding:20px;
+  border-radius:12px;
+  margin-bottom:18px;
+  box-shadow:0 3px 14px #00000010;
+}
+button{
+  background:#1768a5;
+  color:white;
+  border:0;
+  padding:12px 18px;
+  border-radius:7px;
+  cursor:pointer;
+  margin:5px;
+}
+.pdf-item{
+  background:#f1f5f9;
+  padding:14px;
+  border-radius:8px;
+  margin:10px 0;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+#reader{
+  display:none;
+}
+iframe{
+  width:100%;
+  height:75vh;
+  border:1px solid #ddd;
+  border-radius:8px;
+  background:white;
+}
+#message{
+  text-align:center;
+  margin:15px 0;
+}
+.back{
+  background:#475569;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>📚 Free Reading Library</h2>
+  <p>The SCORE Booster</p>
+</header>
+
+<div class="container">
+
+  <div class="box" id="library">
+    <h3>Available Free PDFs</h3>
+    <p>পছন্দের PDF নির্বাচন করে অনলাইনে পড়ুন।</p>
+
+    <div id="message">Loading PDFs...</div>
+    <div id="pdfList"></div>
+
+    <button onclick="loadPDFs()">Refresh Library</button>
+    <button class="back" onclick="location.href='index.html'">
+      Back to Main Dashboard
+    </button>
+  </div>
+
+  <div class="box" id="reader">
+    <h3 id="readerTitle">PDF Reader</h3>
+
+    <iframe
+      id="pdfFrame"
+      title="PDF Reader"
+      referrerpolicy="no-referrer"
+    ></iframe>
+
+    <button class="back" onclick="closeReader()">
+      Back to PDF List
+    </button>
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+
+<script>
+async function loadPDFs(){
+  const message=document.getElementById("message");
+  const list=document.getElementById("pdfList");
+
+  message.textContent="Loading PDFs...";
+  list.innerHTML="";
+
+  try{
+    const {data,error}=await window.sb.functions.invoke(
+      "free-pdf-reader",
+      {body:{action:"list"}}
+    );
+
+    if(error) throw error;
+    if(!data || !data.success){
+      throw new Error(data?.error || "Could not load PDFs.");
+    }
+
+    if(!data.files || data.files.length===0){
+      message.textContent="No PDFs available yet.";
+      return;
+    }
+
+    message.textContent=data.files.length+" PDF(s) available.";
+
+    data.files.forEach(file=>{
+      const item=document.createElement("div");
+      item.className="pdf-item";
+
+      const name=document.createElement("strong");
+      name.textContent=file.name
+        .replace(/^\d+-/,"")
+        .replace(/\.pdf$/i,"")
+        .replace(/-/g," ");
+
+      const button=document.createElement("button");
+      button.textContent="Read PDF";
+
+      button.onclick=()=>openPDF(file.path,file.name);
+
+      item.append(name,button);
+      list.appendChild(item);
+    });
+
+  }catch(e){
+    message.textContent="Error: "+e.message;
+  }
+}
+
+async function openPDF(path,name){
+  const message=document.getElementById("message");
+
+  message.textContent="Opening PDF...";
+
+  try{
+    const {data,error}=await window.sb.functions.invoke(
+      "free-pdf-reader",
+      {body:{action:"read",path:path}}
+    );
+
+    if(error) throw error;
+    if(!data || !data.success){
+      throw new Error(data?.error || "Could not open PDF.");
+    }
+
+    document.getElementById("readerTitle").textContent=name;
+
+    document.getElementById("pdfFrame").src=
+      data.url+"#toolbar=0&navpanes=0&scrollbar=0";
+
+    document.getElementById("library").style.display="none";
+    document.getElementById("reader").style.display="block";
+
+  }catch(e){
+    message.textContent="Error: "+e.message;
+  }
+}
+
+function closeReader(){
+  document.getElementById("pdfFrame").src="about:blank";
+  document.getElementById("reader").style.display="none";
+  document.getElementById("library").style.display="block";
+}
+
+document.addEventListener("contextmenu",function(e){
+  e.preventDefault();
+});
+
+loadPDFs();
+</script>
+
+</body>
+</html>
