@@ -507,6 +507,24 @@ async function saveExamSchedule() {
   }
 }
 </script>
+  <hr>
+<h2>Free PDF Library Management</h2>
+
+<label>PDF Title:</label>
+<input id="freePdfTitle" placeholder="Enter PDF Name">
+
+<label>Select PDF:</label>
+<input type="file" id="freePdfFile" accept="application/pdf">
+
+<button onclick="uploadFreePDF()">Upload PDF</button>
+
+<p id="freePdfMessage"></p>
+
+<hr>
+<h3>Uploaded Free PDFs</h3>
+<button onclick="loadFreePDFs()">Refresh PDF List</button>
+
+<div id="freePdfList"></div>
 </div>
 </body>
 </html>
