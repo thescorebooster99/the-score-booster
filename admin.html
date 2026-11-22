@@ -539,8 +539,8 @@ async function uploadFreePDF() {
       throw new Error("Only PDF files are allowed.");
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      throw new Error("PDF must be under 20 MB.");
+    if (file.size > 50 * 1024 * 1024) {
+      throw new Error("PDF must be under 50 MB.");
     }
 
     const { data: { user }, error: userError } =
