@@ -470,41 +470,61 @@ await saveQueue;
 
   if(reviewError) throw reviewError;
 
-  (review.questions || []).forEach((q,index)=>{
-   const div=document.createElement("div");
-   div.className="question";
+  
+(review.questions || []).forEach((q,index)=>{
+  const div=document.createElement("div");
+  div.className="question";
 
-   const title=document.createElement("h4");
-   title.textContent=(index+1)+". "+q.question;
-   div.appendChild(title);
+  const title=document.createElement("h4");
+  title.textContent=(index+1)+". "+q.question;
+  div.appendChild(title);
 
-   const options=Array.isArray(q.options)
+  const options=Array.isArray(q.options)
     ? q.options
     : Object.values(q.options || {});
 
-   options.forEach((option,i)=>{
-    const p=document.createElement("p");
-    p.textContent=
-     String.fromCharCode(65+i)+". "+option;
+  const yourAnswer = q.your_answer;
+  const correctAnswer = q.correct_option;
 
-    if(i+1===q.correct_option){
-     p.className="correct";
-     p.textContent+=" ✓ Correct Answer";
-    }else if(i+1===q.your_answer){
-     p.className="wrong";
-     p.textContent+=" ✗ Your Answer";
-    }
+  const status=document.createElement("p");
 
-    div.appendChild(p);
-   });
+  if(yourAnswer === null || yourAnswer === undefined){
+    status.textContent="Status: Unanswered";
+    status.className="wrong";
+  }else if(Number(yourAnswer) === Number(correctAnswer)){
+    status.textContent="Status: Correct";
+    status.className="correct";
+  }else{
+    status.textContent="Status: Wrong";
+    status.className="wrong";
+  }
 
-   const explanation=document.createElement("p");
-   explanation.textContent=
+  div.appendChild(status);
+
+  const your=document.createElement("p");
+  your.textContent = yourAnswer
+    ? "Your Answer: "+String.fromCharCode(64+Number(yourAnswer))+". "+options[Number(yourAnswer)-1]
+    : "Your Answer: Not Answered";
+
+  div.appendChild(your);
+
+  const correct=document.createElement("p");
+  correct.className="correct";
+  correct.textContent=
+    "Correct Answer: "+
+    String.fromCharCode(64+Number(correctAnswer))+
+    ". "+options[Number(correctAnswer)-1];
+
+  div.appendChild(correct);
+
+  const explanation=document.createElement("p");
+  explanation.textContent=
     "Explanation: "+(q.explanation || "Not available");
 
-   div.appendChild(explanation);
-   area.appendChild(div);
-  });
+  div.appendChild(explanation);
+
+  area.appendChild(div);
+});
 
   const back=document.createElement("button");
   back.textContent="Back to Dashboard";
