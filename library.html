@@ -124,7 +124,7 @@ async function loadPDFs(){
 
   try{
     const {data,error}=await window.sb.functions.invoke(
-      "free-pdf-reader",
+      "clever-endpoint",
       {body:{action:"list"}}
     );
 
@@ -171,7 +171,7 @@ async function openPDF(path,name){
 
   try{
     const {data,error}=await window.sb.functions.invoke(
-      "free-pdf-reader",
+      "clever-endpoint",
       {body:{action:"read",path:path}}
     );
 
