@@ -600,7 +600,7 @@ async function loadFreePDFs() {
 
   try {
     const { data, error } = await window.sb.functions.invoke(
-      "free-pdf-reader",
+      "clever-endpoint",
       { body: { action: "list" } }
     );
 
