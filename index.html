@@ -145,10 +145,12 @@
 <script src="config.js"></script>
 <script src="app.js"></script>
 
+
 <script>
 async function loginStudent() {
   const code = document.getElementById("accessCode").value.trim();
   const message = document.getElementById("message");
+  const button = document.querySelector("#student-login button");
 
   if (!code) {
     message.textContent = "Please enter your Access Code.";
@@ -156,20 +158,32 @@ async function loginStudent() {
     return;
   }
 
-  try {
-    message.textContent = "Checking Access Code...";
-    message.style.color = "#1768a5";
+  if (!window.sb) {
+    message.textContent = "Connection error. Please refresh the page.";
+    message.style.color = "red";
+    return;
+  }
 
+  button.disabled = true;
+  message.textContent = "Verifying Access Code...";
+  message.style.color = "#1768a5";
+
+  try {
+    // Check existing session
     const { data: sessionData, error: sessionError } =
       await window.sb.auth.getSession();
 
     if (sessionError) throw sessionError;
 
+    // Create anonymous session if needed
     if (!sessionData.session) {
-      const { error } = await window.sb.auth.signInAnonymously();
-      if (error) throw error;
+      const { error: authError } =
+        await window.sb.auth.signInAnonymously();
+
+      if (authError) throw authError;
     }
 
+    // Verify Access Code
     const { data, error } = await window.sb.rpc(
       "redeem_access_code",
       { p_code: code }
@@ -178,7 +192,7 @@ async function loginStudent() {
     if (error) throw error;
 
     if (data && data.success) {
-      message.textContent = "Access Granted! Redirecting...";
+      message.textContent = "Login successful! Redirecting...";
       message.style.color = "green";
 
       window.location.href = "student.html";
@@ -186,14 +200,17 @@ async function loginStudent() {
       message.textContent =
         data?.message || "Invalid or expired Access Code.";
       message.style.color = "red";
+      button.disabled = false;
     }
 
   } catch (error) {
-    message.textContent = error.message;
+    console.error("Student login error:", error);
+
+    message.textContent = error.message || "Login failed.";
     message.style.color = "red";
+    button.disabled = false;
   }
 }
 </script>
-
 </body>
 </html>
