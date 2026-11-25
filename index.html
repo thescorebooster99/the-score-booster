@@ -2,180 +2,493 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="The SCORE Booster - BSc Physiotherapy and Health Technology Admission Preparation">
-  <title>The SCORE Booster | Crack Your Goal</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: Arial, sans-serif;
-      background: #f5f7fb;
-      color: #172033;
-      line-height: 1.6;
-    }
-    header {
-      background: #102b50;
-      color: white;
-      padding: 18px 6%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-    .logo { font-size: 21px; font-weight: bold; }
-    .hero {
-      background: linear-gradient(135deg, #102b50, #1768a5);
-      color: white;
-      text-align: center;
-      padding: 75px 20px;
-    }
-    .hero h1 { font-size: 36px; margin-bottom: 12px; }
-    .hero p { font-size: 17px; margin-bottom: 25px; }
-    .btn {
-      display: inline-block;
-      background: #ffbd35;
-      color: #172033;
-      padding: 12px 25px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      border: none;
-      cursor: pointer;
-    }
-    .library-btn {
-  display: inline-block;
-  background: white;
-  color: #1768a5;
-  padding: 12px 25px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-  margin: 10px;
-  border: 2px solid white;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="The SCORE Booster - BSc Physiotherapy and Health Technology Admission Preparation">
+<title>The SCORE Booster | Crack Your Goal</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:Arial,sans-serif;
+  background:#f5f8ff;
+  color:#102b50;
+  line-height:1.6;
 }
-    .container { max-width: 950px; margin: auto; padding: 35px 18px; }
-    h2 { text-align: center; margin-bottom: 22px; color: #102b50; }
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 14px;
-    }
-    .card {
-      background: white;
-      padding: 22px 12px;
-      border-radius: 12px;
-      text-align: center;
-      box-shadow: 0 3px 14px #0000000d;
-    }
-    .card strong { display: block; color: #1768a5; font-size: 19px; }
-    .login {
-      background: white;
-      padding: 28px;
-      border-radius: 14px;
-      max-width: 440px;
-      margin: 25px auto;
-      box-shadow: 0 3px 18px #00000012;
-    }
-    .login input {
-      width: 100%;
-      padding: 13px;
-      margin: 12px 0;
-      border: 1px solid #ccd4df;
-      border-radius: 7px;
-      font-size: 16px;
-    }
-    .login button { width: 100%; }
-    #message { margin-top: 12px; text-align: center; }
-    footer {
-      background: #102b50;
-      color: white;
-      text-align: center;
-      padding: 22px;
-      margin-top: 30px;
-    }
-    @media(max-width: 480px) {
-      .hero h1 { font-size: 28px; }
-      .hero { padding: 55px 15px; }
-    }
-  </style>
+
+/* HEADER */
+header{
+  background:#08264d;
+  color:white;
+  padding:15px 5%;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:12px;
+}
+.logo{font-size:21px;font-weight:bold}
+.logo span{color:#ffca28}
+nav{display:flex;gap:20px;flex-wrap:wrap}
+nav a{
+  color:white;
+  text-decoration:none;
+  font-weight:bold;
+}
+nav a:hover{color:#ffca28}
+
+/* HERO */
+.hero{
+  background:linear-gradient(120deg,#dceeff,#fff,#c8e4ff);
+  padding:50px 6%;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:30px;
+}
+.hero-text{flex:1}
+.welcome{
+  font-size:26px;
+  font-weight:bold;
+  color:#1768a5;
+}
+.hero h1{
+  font-size:clamp(38px,5vw,60px);
+  line-height:1.08;
+  margin:12px 0;
+  color:#08264d;
+}
+.hero h1 span{color:#e94b19}
+.hero-tag{
+  display:inline-block;
+  background:#ffca28;
+  padding:9px 16px;
+  border-radius:5px;
+  font-weight:bold;
+  margin:12px 0;
+}
+.hero-text p{font-weight:bold;margin:8px 0}
+.slogan{
+  font-size:25px;
+  font-weight:bold;
+  color:#1768a5;
+  margin-top:18px;
+}
+
+/* BOOK */
+.book-area{
+  flex:1;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:360px;
+  perspective:1000px;
+}
+.book{
+  width:260px;
+  height:340px;
+  position:relative;
+  transform:rotateY(-12deg);
+  filter:drop-shadow(15px 18px 15px #19365355);
+}
+.book-cover{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(145deg,#fff 0%,#fff 75%,#ff5b20 75%);
+  border:5px solid #eee4d9;
+  border-left:10px solid #ddd;
+  border-radius:3px 8px 8px 3px;
+  padding:25px 16px;
+  text-align:center;
+}
+.book-cover:before{
+  content:"";
+  position:absolute;
+  top:0;right:0;
+  width:45px;height:45px;
+  background:#f04d1c;
+  clip-path:polygon(0 0,100% 0,100% 100%);
+}
+.book-title{
+  font-size:31px;
+  line-height:1.15;
+  color:#a83217;
+  font-weight:900;
+  margin-top:8px;
+}
+.book-subtitle{
+  font-size:12px;
+  font-weight:bold;
+  margin-top:12px;
+  color:#333;
+}
+.book-art{font-size:65px;margin:20px 0 10px}
+.book-details{
+  font-size:11px;
+  text-align:left;
+  font-weight:bold;
+  color:#333;
+}
+.book-side{
+  position:absolute;
+  width:18px;
+  height:100%;
+  right:-18px;
+  top:0;
+  background:repeating-linear-gradient(
+    to bottom,#eee 0px,#fff 2px,#ddd 3px
+  );
+}
+.book-caption{
+  position:absolute;
+  bottom:-48px;
+  font-weight:bold;
+  color:#08264d;
+  text-align:center;
+  width:100%;
+}
+
+/* SUBJECTS */
+.subject-section{
+  padding:35px 5%;
+  background:#08264d;
+  color:white;
+  text-align:center;
+}
+.section-title{
+  font-size:27px;
+  margin-bottom:25px;
+}
+.subjects{
+  display:grid;
+  grid-template-columns:repeat(5,1fr);
+  gap:12px;
+}
+.subject{
+  padding:15px 8px;
+  border-right:1px solid #ffffff55;
+}
+.subject-icon{font-size:36px}
+.subject strong{display:block;font-size:17px}
+.subject small{font-size:14px}
+
+/* LOGIN AND LIBRARY */
+.access-section{
+  padding:40px 5%;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:22px;
+}
+.access-card{
+  border-radius:20px;
+  padding:30px 24px;
+  min-height:300px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  box-shadow:0 8px 22px #00000020;
+}
+.student-card{
+  background:linear-gradient(135deg,#0753a4,#08264d);
+  color:white;
+}
+.library-card{
+  background:linear-gradient(135deg,#008b42,#00602e);
+  color:white;
+}
+.access-heading{
+  font-size:30px;
+  font-weight:bold;
+  text-align:center;
+  margin-bottom:8px;
+}
+.access-icon{
+  font-size:48px;
+  text-align:center;
+}
+.access-card p{text-align:center;margin-bottom:12px}
+.access-card input{
+  width:100%;
+  padding:14px;
+  border:2px solid #d4e0ef;
+  border-radius:10px;
+  font-size:16px;
+  margin:8px 0 14px;
+}
+.access-card button,.library-link{
+  display:block;
+  width:100%;
+  padding:14px;
+  border:0;
+  border-radius:35px;
+  background:#ffca28;
+  color:#08264d;
+  text-align:center;
+  text-decoration:none;
+  font-size:18px;
+  font-weight:bold;
+  cursor:pointer;
+}
+.library-link{
+  background:white;
+  color:#00602e;
+  margin-top:12px;
+}
+.access-card button:disabled{opacity:.65;cursor:wait}
+#message{
+  text-align:center;
+  margin-top:12px;
+  font-weight:bold;
+  overflow-wrap:anywhere;
+}
+
+/* FEATURES */
+.features{
+  padding:35px 5%;
+  background:#eaf3ff;
+}
+.feature-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+}
+.feature{
+  text-align:center;
+  padding:20px 10px;
+  background:white;
+  border-radius:12px;
+  box-shadow:0 3px 12px #0000000c;
+}
+.feature-icon{font-size:35px}
+.feature strong{display:block;margin-top:8px}
+
+/* FOOTER */
+footer{
+  background:#08264d;
+  color:white;
+  padding:30px 5%;
+  text-align:center;
+}
+.footer-name{
+  color:#ffca28;
+  font-size:22px;
+  font-weight:bold;
+}
+footer a{color:#ffca28;text-decoration:none}
+.footer-bottom{margin-top:18px;font-size:14px;color:#dce8f7}
+
+/* MOBILE */
+@media(max-width:700px){
+  header{justify-content:center;text-align:center}
+  nav{justify-content:center;gap:15px}
+  .hero{
+    flex-direction:column;
+    text-align:center;
+    padding:40px 18px 65px;
+  }
+  .hero h1{font-size:39px}
+  .book-area{min-height:370px;width:100%}
+  .subjects{grid-template-columns:repeat(2,1fr)}
+  .subject:last-child{grid-column:span 2}
+  .access-section{grid-template-columns:1fr;padding:25px 15px}
+  .feature-grid{grid-template-columns:repeat(2,1fr)}
+  .access-card{min-height:280px}
+}
+</style>
 </head>
+
 <body>
 
+<!-- HEADER -->
 <header>
-  <div class="logo">THE SCORE BOOSTER</div>
-  <div>Crack Your Goal</div>
+  <div class="logo">📖 THE <span>SCORE</span> BOOSTER</div>
+  <nav>
+    <a href="#">Home</a>
+    <a href="library.html">Library</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
 </header>
 
+<!-- HERO -->
 <section class="hero">
-  <h1>Welcome to The SCORE Booster</h1>
-  <p>Your Complete Admission Preparation Platform</p>
-  <p>BSc in Physiotherapy & Health Technology</p>
-  <a href="#student-login" class="btn">Student Login</a>
-  <a href="library.html" class="library-btn">
-  📚 Free Reading Library
-</a>
-</section>
-
-<main class="container">
-  <h2>এক এর ভিতর সব</h2>
-  <div class="cards">
-    <div class="card"><strong>Biology</strong>জীববিজ্ঞান</div>
-    <div class="card"><strong>Chemistry</strong>রসায়ন</div>
-    <div class="card"><strong>Physics</strong>পদার্থবিজ্ঞান</div>
-    <div class="card"><strong>English</strong>ইংরেজি</div>
-    <div class="card"><strong>GK</strong>সাধারণ জ্ঞান</div>
+  <div class="hero-text">
+    <div class="welcome">Welcome to</div>
+    <h1>THE <span>SCORE</span><br>BOOSTER</h1>
+    <div class="hero-tag">Your Complete Admission Preparation Platform</div>
+    <p>BSc in Physiotherapy & Health Technology</p>
+    <div class="slogan">Study Smart...<br>Score Higher!</div>
+    <p>এক এর ভিতর সব</p>
   </div>
 
-  <section id="student-login" class="login">
-    <h2>Student Login</h2>
-    <p style="text-align:center">আপনার Access Code দিয়ে প্রবেশ করুন</p>
-    <input type="text" id="accessCode" placeholder="Enter Your Access Code">
-    <button class="btn" onclick="loginStudent()">Login Now</button>
-    <p id="message"></p>
-  </section>
-</main>
+  <div class="book-area">
+    <div class="book">
+      <div class="book-cover">
+        <div class="book-title">THE<br>SCORE<br>BOOSTER</div>
+        <div class="book-subtitle">BSc Admission Preparation Guide</div>
+        <div class="book-art">📚🧬🩺</div>
+        <div class="book-details">
+          ✓ বিগত বছরের প্রশ্ন<br>
+          ✓ ব্যাখ্যাসহ সমাধান<br>
+          ✓ বিষয়ভিত্তিক প্রস্তুতি<br>
+          ✓ মডেল টেস্ট
+        </div>
+      </div>
+      <div class="book-side"></div>
+      <div class="book-caption">Your Success Starts Here</div>
+    </div>
+  </div>
+</section>
 
-<footer>
-  <p>© 2026 The SCORE Booster</p>
-  <p>Crack Your Goal | Learn • Practice • Achieve</p>
+<!-- SUBJECTS -->
+<section class="subject-section">
+  <h2 class="section-title">এক এর ভিতর সব</h2>
+  <div class="subjects">
+    <div class="subject">
+      <div class="subject-icon">🧬</div>
+      <strong>Biology</strong>
+      <small>জীববিজ্ঞান</small>
+    </div>
+    <div class="subject">
+      <div class="subject-icon">🧪</div>
+      <strong>Chemistry</strong>
+      <small>রসায়ন</small>
+    </div>
+    <div class="subject">
+      <div class="subject-icon">⚛️</div>
+      <strong>Physics</strong>
+      <small>পদার্থবিজ্ঞান</small>
+    </div>
+    <div class="subject">
+      <div class="subject-icon">📖</div>
+      <strong>English</strong>
+      <small>ইংরেজি</small>
+    </div>
+    <div class="subject">
+      <div class="subject-icon">🌐</div>
+      <strong>GK</strong>
+      <small>সাধারণ জ্ঞান</small>
+    </div>
+  </div>
+</section>
+
+<!-- STUDENT LOGIN AND LIBRARY -->
+<section class="access-section">
+
+  <div class="access-card student-card" id="student-login">
+    <div class="access-icon">🎓</div>
+    <div class="access-heading">Student Login</div>
+    <p>আপনার Access Code দিয়ে প্রবেশ করুন</p>
+
+    <input
+      type="text"
+      id="accessCode"
+      placeholder="Enter Your Access Code"
+      autocomplete="off"
+    >
+
+    <button id="loginButton" onclick="loginStudent()">
+      ➜ Login Now
+    </button>
+
+    <p id="message"></p>
+  </div>
+
+  <div class="access-card library-card">
+    <div class="access-icon">📚</div>
+    <div class="access-heading">Free Reading Library</div>
+    <p>Access study materials anytime, anywhere</p>
+
+    <a href="library.html" class="library-link">
+      📖 Explore Library
+    </a>
+  </div>
+
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="about">
+  <h2 class="section-title">Why The SCORE Booster?</h2>
+
+  <div class="feature-grid">
+    <div class="feature">
+      <div class="feature-icon">🎯</div>
+      <strong>Past Year Questions</strong>
+      বিগত বছরের প্রশ্ন
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">📋</div>
+      <strong>Detailed Solutions</strong>
+      ব্যাখ্যাসহ সমাধান
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">📈</div>
+      <strong>Complete Preparation</strong>
+      পূর্ণাঙ্গ প্রস্তুতি
+    </div>
+
+    <div class="feature">
+      <div class="feature-icon">🏆</div>
+      <strong>Your Success</strong>
+      আমাদের লক্ষ্য
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="contact">
+  <p>Made by</p>
+  <div class="footer-name">Sofiul Hasan Sium</div>
+  <p>Graphic Design & Website Development</p>
+
+  <div class="footer-bottom">
+    <p>© 2026 The SCORE Booster</p>
+    <p>Crack Your Goal | Learn • Practice • Achieve</p>
+    <p>Contact Us:
+      <a href="https://wa.me/8801575586582" target="_blank">
+        WhatsApp: 01575586582
+      </a>
+    </p>
+  </div>
 </footer>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- SUPABASE CONNECTION -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="config.js"></script>
 <script src="app.js"></script>
 
-
+<!-- STUDENT LOGIN -->
 <script>
 async function loginStudent() {
   const code = document.getElementById("accessCode").value.trim();
   const message = document.getElementById("message");
-  const button = document.querySelector("#student-login button");
+  const button = document.getElementById("loginButton");
 
   if (!code) {
     message.textContent = "Please enter your Access Code.";
-    message.style.color = "red";
+    message.style.color = "#ffb6b6";
     return;
   }
 
   if (!window.sb) {
     message.textContent = "Connection error. Please refresh the page.";
-    message.style.color = "red";
+    message.style.color = "#ffb6b6";
     return;
   }
 
   button.disabled = true;
   message.textContent = "Verifying Access Code...";
-  message.style.color = "#1768a5";
+  message.style.color = "#ffca28";
 
   try {
-    // Check existing session
     const { data: sessionData, error: sessionError } =
       await window.sb.auth.getSession();
 
     if (sessionError) throw sessionError;
 
-    // Create anonymous session if needed
     if (!sessionData.session) {
       const { error: authError } =
         await window.sb.auth.signInAnonymously();
@@ -183,7 +496,6 @@ async function loginStudent() {
       if (authError) throw authError;
     }
 
-    // Verify Access Code
     const { data, error } = await window.sb.rpc(
       "redeem_access_code",
       { p_code: code }
@@ -193,13 +505,13 @@ async function loginStudent() {
 
     if (data && data.success) {
       message.textContent = "Login successful! Redirecting...";
-      message.style.color = "green";
+      message.style.color = "#b8ffcb";
 
       window.location.href = "student.html";
     } else {
       message.textContent =
         data?.message || "Invalid or expired Access Code.";
-      message.style.color = "red";
+      message.style.color = "#ffb6b6";
       button.disabled = false;
     }
 
@@ -207,10 +519,17 @@ async function loginStudent() {
     console.error("Student login error:", error);
 
     message.textContent = error.message || "Login failed.";
-    message.style.color = "red";
+    message.style.color = "#ffb6b6";
     button.disabled = false;
   }
 }
+
+document.getElementById("accessCode").addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    loginStudent();
+  }
+});
 </script>
+
 </body>
 </html>
