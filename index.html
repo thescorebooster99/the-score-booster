@@ -143,7 +143,7 @@
 </footer>
 
 <script>
-function loginStudent() {
+async function loginStudent() {
   const code = document.getElementById("accessCode").value.trim();
   const message = document.getElementById("message");
 
@@ -153,8 +153,42 @@ function loginStudent() {
     return;
   }
 
-  message.textContent = "Student login system is being configured.";
-  message.style.color = "#1768a5";
+  try {
+    message.textContent = "Checking Access Code...";
+    message.style.color = "#1768a5";
+
+    const { data: sessionData, error: sessionError } =
+      await window.sb.auth.getSession();
+
+    if (sessionError) throw sessionError;
+
+    if (!sessionData.session) {
+      const { error } = await window.sb.auth.signInAnonymously();
+      if (error) throw error;
+    }
+
+    const { data, error } = await window.sb.rpc(
+      "redeem_access_code",
+      { p_code: code }
+    );
+
+    if (error) throw error;
+
+    if (data && data.success) {
+      message.textContent = "Access Granted! Redirecting...";
+      message.style.color = "green";
+
+      window.location.href = "student.html";
+    } else {
+      message.textContent =
+        data?.message || "Invalid or expired Access Code.";
+      message.style.color = "red";
+    }
+
+  } catch (error) {
+    message.textContent = error.message;
+    message.style.color = "red";
+  }
 }
 </script>
 
